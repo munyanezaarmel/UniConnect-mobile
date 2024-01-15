@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "493311083695",
+    "project_id": "notification-mobile-3a183",
+    "storage_bucket": "notification-mobile-3a183.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493311083695:android:7f2ad59c0a4593a765405a",
+        "android_client_info": {
+          "package_name": "com.uniconnect.client"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKrJdzg1P7KrbvuQVsIvu6BCTeFp4R7k8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
