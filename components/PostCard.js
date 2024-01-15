@@ -1,8 +1,11 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert,Image } from "react-native";
 import React, { useState } from "react";
 import moment from "moment";
 import axios from "axios";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import Fontisto from "react-native-vector-icons/Fontisto";
+import Feather from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
 import EditModal from "./EditModal";
 
@@ -43,7 +46,7 @@ const PostCard = ({ posts, myPostScreen }) => {
   };
   return (
     <View>
-      <Text style={styles.heading}>Total Posts {posts?.length}</Text>
+      {/* <Text style={styles.heading}>Total Posts {posts?.length}</Text> */}
       {myPostScreen && (
         <EditModal
           modalVisible={modalVisible}
@@ -76,7 +79,6 @@ const PostCard = ({ posts, myPostScreen }) => {
             </View>
           )}
           {/* <Text style={styles.title}>Title : {post?.title}</Text> */}
-          <Text style={styles.desc}> {post?.description}</Text>
           <View style={styles.footer}>
             {post?.postedBy?.name && (
               <Text>
@@ -90,6 +92,18 @@ const PostCard = ({ posts, myPostScreen }) => {
               <FontAwesome5 name="clock" color={"orange"} />{" "}
               {moment(post?.createdAt).fromNow()}
             </Text>
+          </View>
+          <Text style={styles.desc}> {post?.description}</Text>
+          {post?.image && (<Image source={{ uri: post?.image}} style={styles.image} />)}
+          <View>
+            {!myPostScreen && (
+              <View style={styles.likes}>
+                <AntDesign name="hearto" size={16} />
+                <Fontisto name="comment" size={16} />
+                <AntDesign name="sharealt" size={16} />
+                <Feather name="bookmark" size={16} />
+              </View>
+            )}
           </View>
         </View>
       ))}
@@ -124,6 +138,18 @@ const styles = StyleSheet.create({
   desc: {
     marginTop: 10,
   },
+  likes: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+    alignItems: "center",
+  },
+  image: {
+    width: "95%",
+    height: 200,
+    margin: 16,
+
+  }
 });
 
 export default PostCard;

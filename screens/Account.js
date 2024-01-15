@@ -45,16 +45,16 @@ const Account = () => {
     <View style={styles.container}>
       <ScrollView>
         <View style={{ alignItems: "center" }}>
-          <Image
+          {/* <Image
             source={{
               uri: "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png",
             }}
             style={{ height: 200, width: 200, borderRadius: 100 }}
-          />
+          /> */}
         </View>
-        <Text style={styles.warningtext}>
+        {/* <Text style={styles.warningtext}>
           Currently You Can Only Update Your Name And Password*
-        </Text>
+        </Text> */}
         <View style={styles.inputContainer}>
           <Text style={styles.inputText}>Name</Text>
           <TextInput
