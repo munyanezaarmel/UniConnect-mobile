@@ -3,12 +3,16 @@ import React from "react";
 import { AuthProvider } from "./context/authContext";
 import ScreenMenu from "./components/Menus/ScreenMenu";
 import { PostProvider } from "./context/postContext";
+import { NotificationProvider } from './context/notificationContext'; 
+
 
 const RootNavigation = () => {
   return (
     <AuthProvider>
       <PostProvider>
-        <ScreenMenu />
+      <NotificationProvider>
+          <ScreenMenu />
+        </NotificationProvider>
       </PostProvider>
     </AuthProvider>
   );

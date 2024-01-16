@@ -13,10 +13,14 @@ import { PostContext } from "../context/postContext";
 import FooterMenu from "../components/Menus/FooterMenu";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import axios from "axios";
-import * as ImagePicker from "expo-image-picker";
+import * as ImagePicker from "expo-image-picker/src/ImagePicker";
+import { usePushNotifications } from '../hooks/usePushNotifications';
+
+
 
 const Post = ({ navigation }) => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const { expoPushToken,sendPushNotification } = usePushNotifications();
 
   const [error, setError] = useState(null);
   const pickImageAsync = async () => {
@@ -60,11 +64,12 @@ const Post = ({ navigation }) => {
       if(description) formData.append("description",description)
       if (selectedImage) {
         formData.append("image", {
-          uri: selectedImage.uri,
+          uri: selectedImage,
           type: "image/jpeg",
           name: "photo.jpg",
         });
       }
+      console.log(formData)
       const { data } = await axios.post("/post/create-post", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -72,7 +77,7 @@ const Post = ({ navigation }) => {
       });
       setLoading(false);
       setPosts([...posts, data?.post]);
-      alert(data?.message);
+        await sendPushNotification(expoPushToken,(data?.message))
       navigation.navigate("Home");
     } catch (error) {
       alert(error.response.data.message || error.message);
@@ -103,9 +108,9 @@ const Post = ({ navigation }) => {
           />
           {selectedImage && (
             <View style={styles.imageContainer}>
-                  {console.log("Selected Image URI:", selectedImage.uri)}
+                  {console.log("Selected Image URI:", selectedImage)}
               <Image
-                source={{ uri: selectedImage.uri }}
+                source={{ uri: selectedImage }}
                 style={styles.image}
                 resizeMode="cover"
               />
@@ -166,6 +171,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 8,
+    marginTop:10
   },
   postBtnText: {
     color: "#ffffff",
