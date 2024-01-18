@@ -1,5 +1,14 @@
-import { View, Text, StyleSheet, Alert,Image } from "react-native";
-import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  ActivityIndicator,
+} from "react-native";
+import React, { useState, useEffect, useContext } from "react";
 import moment from "moment";
 import axios from "axios";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -7,11 +16,26 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Feather from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
+import { Button, Card, Modal } from "@ui-kitten/components";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { usePushNotifications } from "../hooks/usePushNotifications";
+
 import EditModal from "./EditModal";
+import CommentModal from "./CommentModal";
+import { PostContext } from "../context/postContext";
 
 const PostCard = ({ posts, myPostScreen }) => {
+  const { expoPushToken, sendPushNotification } = usePushNotifications();
   const [loading, setLoading] = useState(false);
+  const [modalComment, setmodalComment] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [visible, setVisible] = React.useState(false);
+  const [likes, setLikes] = useState([]);
+  const [data, setData] = useState([]);
+  const [dislikes, setDislikes] = useState(0);
+  const [comment, setComment] = useState("");
+  const [commentStorage, setCommentStorage] = useContext(PostContext);
+
   const [post, setPost] = useState({});
   const navigation = useNavigation();
   //handle delete prompt
@@ -29,6 +53,32 @@ const PostCard = ({ posts, myPostScreen }) => {
       },
     ]);
   };
+  const likePost = async (id) => {
+    try {
+      const response = await axios.put(
+        "/post/like",
+        { postId: id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            postId: id,
+          }),
+        }
+      );
+
+      const result = response.data;
+      console.log(result);
+      // Update your data array with the updated post
+      const newData = data.map((item) =>
+        item._id === result._id ? result : item
+      );
+      setData(newData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   //delete post data
   const handleDeletePost = async (id) => {
@@ -44,8 +94,44 @@ const PostCard = ({ posts, myPostScreen }) => {
       alert(error);
     }
   };
+  const handleComment = async (id) => {
+    try {
+      setLoading(true);
+      if (!comment) {
+        alert("Please Enter comment");
+      }
+      const formData = new FormData();
+      if (comment) formData.append("comment", comment);
+      const { data } = await axios.post(`/post/comment/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // Check if data is defined
+      if (data) {
+        alert("comment added successful");
+        setVisible(false);
+        setLoading(false);
+        // await sendPushNotification(expoPushToken, data?.message);
+      } else {
+        console.log("Response data is undefined:", data);
+        setLoading(false);
+        // Handle the case where data is undefined
+        alert("Error: Response data is undefined");
+      }
+    } catch (error) {
+      // Log detailed error response
+      console.log(error.response?.data || error.message);
+      alert(error.response?.data?.message || error.message);
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
   return (
     <View>
+      {loading && <ActivityIndicator />}
       {/* <Text style={styles.heading}>Total Posts {posts?.length}</Text> */}
       {myPostScreen && (
         <EditModal
@@ -94,14 +180,79 @@ const PostCard = ({ posts, myPostScreen }) => {
             </Text>
           </View>
           <Text style={styles.desc}> {post?.description}</Text>
-          {post?.image && (<Image source={{ uri: post?.image}} style={styles.image} />)}
+          {post?.image && (
+            <Image source={{ uri: post?.image }} style={styles.image} />
+          )}
           <View>
             {!myPostScreen && (
               <View style={styles.likes}>
-                <AntDesign name="hearto" size={16} />
-                <Fontisto name="comment" size={16} />
-                <AntDesign name="sharealt" size={16} />
-                <Feather name="bookmark" size={16} />
+                <View style={styles.likeButton}>
+                  <AntDesign
+                    name="like1"
+                    color="#6b7280"
+                    size={20}
+                    onPress={() => likePost(post?._id)}
+                  />
+                  <Text>{post?.likes?.length}</Text>
+                </View>
+                <TouchableOpacity onPress={() => setVisible(true)}>
+                  <View>
+                    <Text>
+                      {post?.comments?.length}{" "}
+                      {post?.comments?.length > 1 ? "Comments" : "Comment"}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+
+                {visible && (
+                  <View style={styles.commentModal} >
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Enter your comment"
+                      value={comment}
+                      onChangeText={(text) => setComment(text)}
+                    />
+                    <Button onPress={() => handleComment(post?._id)}>
+                      Post Comment{" "}
+                    </Button>
+                    <Button onPress={() => setVisible(false)}>Cancel</Button>
+                    {post?.comments.map((comment) => (
+                      <View style={styles.commentSection}>
+                        <Text>{comment?.comment}</Text>
+                        {/* <Text>{comment?.createdBy}</Text> */}
+                      </View>
+                    ))}
+                  </View>
+                )}
+
+                {/* 
+                <Modal
+                  visible={visible}
+                  backdropStyle={styles.backdrop}
+                  onBackdropPress={() => setVisible(false)}
+                >
+                  <Card disabled={true}>
+                    <Text style={styles.topComment}>Comment down below😻</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Enter your comment"
+                      value={comment}
+                      onChangeText={(text) => setComment(text)}
+                    />
+                    <View style={styles.commentButtons}>
+                      <Button onPress={() => handleComment(post?._id)}>
+                        Post Comment{" "}
+                      </Button>
+                      <Button onPress={() => setVisible(false)}>Cancel</Button>
+                    </View>
+                  </Card>
+                </Modal> */}
+                {/* <CommentModal
+                  isVisible={modalComment}
+                  onClose={() => setmodalComment(false)}
+                  onPostComment={handlePostComment}
+                  comments={post?.comments}
+                /> */}
               </View>
             )}
           </View>
@@ -138,6 +289,14 @@ const styles = StyleSheet.create({
   desc: {
     marginTop: 10,
   },
+  input: {
+    height: 40,
+    borderColor: "#757575",
+    borderWidth: 1,
+    marginBottom: 10,
+    padding: 8,
+    fontSize: 16,
+  },
   likes: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -148,8 +307,48 @@ const styles = StyleSheet.create({
     width: "95%",
     height: 200,
     margin: 16,
-
-  }
+  },
+  likeButton: {
+    borderColor: "#2563eb",
+    width: 60,
+    height: 30,
+    borderRadius: 100,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    flexDirection: "row",
+    gap: 2,
+  },
+  comment: {
+    borderColor: "#2563eb",
+    width: 100,
+    height: 45,
+    borderRadius: 100,
+    backgroundColor: "black",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  commentText: {
+    color: "white",
+    fontSize: 18,
+    textAlign: "center",
+  },
+  topComment: {
+    fontSize: 18,
+    fontWeight: 500,
+    padding: 30,
+  },
+  commentButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+    alignItems: "center",
+    gap: 20,
+  },
+  commentSection: {
+    flexDirection: "column",
+  },
 });
 
 export default PostCard;

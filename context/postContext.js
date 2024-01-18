@@ -8,6 +8,7 @@ const PostProvider = ({ children }) => {
   //state
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
+  const[commentStorage,setCommentStorage]=useState([])
 
   //get posts
   const getAllPosts = async () => {
