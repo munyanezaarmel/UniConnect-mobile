@@ -9,7 +9,7 @@ const FooterMenu = () => {
   const route = useRoute();
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} >
       <TouchableOpacity onPress={() => navigation.navigate("Home")}>
         <FontAwesome5
           name="home"
@@ -32,7 +32,7 @@ const FooterMenu = () => {
           style={styles.iconStyle}
           color={route.name === "Myposts" && "orange"}
         />
-        <Text>My Posts</Text>
+        <Text >My Posts</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Account")}>
         <FontAwesome5
@@ -40,7 +40,7 @@ const FooterMenu = () => {
           style={styles.iconStyle}
           color={route.name === "Account" && "orange"}
         />
-        <Text>Account</Text>
+        <Text >Account</Text>
       </TouchableOpacity>
     </View>
   );

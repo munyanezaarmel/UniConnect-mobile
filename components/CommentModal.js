@@ -14,7 +14,7 @@ const CommentModal = ({ postId, onPostComment, comments }) => {
   };
 
   return (
-    <View>
+    <View >
       <TextInput
         style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, padding: 8 }}
         placeholder="Enter your comment"
