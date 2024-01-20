@@ -23,6 +23,7 @@ import { usePushNotifications } from "../hooks/usePushNotifications";
 import EditModal from "./EditModal";
 import CommentModal from "./CommentModal";
 import { PostContext } from "../context/postContext";
+// Use the state from context
 
 const PostCard = ({ posts, myPostScreen }) => {
   const { expoPushToken, sendPushNotification } = usePushNotifications();
@@ -35,6 +36,7 @@ const PostCard = ({ posts, myPostScreen }) => {
   const [dislikes, setDislikes] = useState(0);
   const [comment, setComment] = useState("");
   const [commentStorage, setCommentStorage] = useContext(PostContext);
+  const [postState, setPostState] = useContext(PostContext);
 
   const [post, setPost] = useState({});
   const navigation = useNavigation();
@@ -62,19 +64,14 @@ const PostCard = ({ posts, myPostScreen }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            postId: id,
-          }),
         }
       );
 
       const result = response.data;
-      console.log(result);
-      // Update your data array with the updated post
-      const newData = data.map((item) =>
-        item._id === result._id ? result : item
+      // Update your local state with the updated post
+      setPostState((prevPosts) =>
+        prevPosts.map((item) => (item._id === result._id ? result : item))
       );
-      setData(newData);
     } catch (error) {
       console.log(error);
     }
@@ -86,7 +83,7 @@ const PostCard = ({ posts, myPostScreen }) => {
       setLoading(true);
       const { data } = await axios.delete(`/post/delete-post/${id}`);
       setLoading(false);
-      alert(data?.message);
+      await sendPushNotification(expoPushToken, data?.message);
       navigation.push("Myposts");
     } catch (error) {
       setLoading(false);
@@ -94,38 +91,29 @@ const PostCard = ({ posts, myPostScreen }) => {
       alert(error);
     }
   };
-  const handleComment = async (id) => {
+  const handleComment = async (text, postId) => {
     try {
-      setLoading(true);
-      if (!comment) {
-        alert("Please Enter comment");
-      }
-      const formData = new FormData();
-      if (comment) formData.append("comment", comment);
-      const { data } = await axios.post(`/post/comment/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.put(
+        "/post/comment",
+        { postId, text },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      // Check if data is defined
-      if (data) {
-        alert("comment added successful");
-        setVisible(false);
-        setLoading(false);
-        // await sendPushNotification(expoPushToken, data?.message);
-      } else {
-        console.log("Response data is undefined:", data);
-        setLoading(false);
-        // Handle the case where data is undefined
-        alert("Error: Response data is undefined");
-      }
+      const result = response.data;
+
+      // Update your state with the new comments
+      setPostState((prevPosts) =>
+        prevPosts.map((item) =>
+          item._id === postId ? { ...item, comments: result.comments } : item
+        )
+      );
+      await sendPushNotification(expoPushToken, "comment added successful");
     } catch (error) {
-      // Log detailed error response
-      console.log(error.response?.data || error.message);
-      alert(error.response?.data?.message || error.message);
-      setLoading(false);
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -205,7 +193,7 @@ const PostCard = ({ posts, myPostScreen }) => {
                 </TouchableOpacity>
 
                 {visible && (
-                  <View style={styles.commentModal} >
+                  <View style={styles.commentModal}>
                     <TextInput
                       style={styles.input}
                       placeholder="Enter your comment"
@@ -218,10 +206,15 @@ const PostCard = ({ posts, myPostScreen }) => {
                     <Button onPress={() => setVisible(false)}>Cancel</Button>
                     {post?.comments.map((comment) => (
                       <View style={styles.commentSection}>
-                        <Text>{comment?.comment}</Text>
+                        <Text>{comment?.text}</Text>
                         {/* <Text>{comment?.createdBy}</Text> */}
                       </View>
                     ))}
+                    <CommentModal
+                      postId={post._id}
+                      onPostComment={handleComment}
+                      comments={post.comments}
+                    />
                   </View>
                 )}
 

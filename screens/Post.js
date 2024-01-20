@@ -77,7 +77,7 @@ const Post = ({ navigation }) => {
       });
       setLoading(false);
     
-      setPosts([...posts, data?.post]);
+      setPosts((prevPosts) => [data?.post, ...prevPosts]);
         await sendPushNotification(expoPushToken,(data?.message))
       navigation.navigate("Home");
     } catch (error) {
