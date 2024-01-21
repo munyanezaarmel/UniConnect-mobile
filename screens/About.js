@@ -6,7 +6,7 @@ const About = () => {
   return (
     <View style={styles.container}>
       <View style={{ flex: 1, justifyContent: "flex-end" }}>
-        <FooterMenu />
+        {/* <FooterMenu /> */}
       </View>
     </View>
   );

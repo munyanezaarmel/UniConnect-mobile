@@ -1,31 +1,26 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import Animated, {
+  FadeIn,
+  FadeInDown,
+  FadeInUp,
+} from "react-native-reanimated";
 import React from "react";
 
 const SubmitButton = ({ handleSubmit, btnTitle, loading }) => {
   return (
-    <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-      <Text style={styles.btnText}>
-        {loading ? "Please Wait..." : btnTitle}
-      </Text>
-    </TouchableOpacity>
+    <Animated.View
+      className="w-full"
+      entering={FadeInDown.delay(400).duration(1000).springify()}
+    >
+      <TouchableOpacity className="w-full bg-sky-400 p-3 rounded-2xl" onPress={handleSubmit}>
+        <Text className="text-xl font-bold text-white text-center">
+          {loading ? "Please Wait..." : btnTitle}
+        </Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
-const styles = StyleSheet.create({
-  submitBtn: {
-    backgroundColor: "#1e2225",
-    height: 50,
-    marginHorizontal: 25,
-    borderRadius: 80,
-    justifyContent: "center",
-    marginBottom: 20,
-  },
-  btnText: {
-    color: "#ffffff",
-    textAlign: "center",
-    fontSize: 24,
-    fontWeight: "400",
-  },
-});
+
 
 export default SubmitButton;

@@ -131,7 +131,7 @@ const Post = ({ navigation }) => {
         </View>
       </ScrollView>
       <View style={{ flex: 1, justifyContent: "flex-end" }}>
-        <FooterMenu />
+        {/* <FooterMenu /> */}
       </View>
     </View>
   );
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   postBtn: {
-    backgroundColor: "black",
+    backgroundColor: "#8200D6",
     width: 300,
     marginTop: 30,
     height: 40,
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   button: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "gray",
     padding: 10,
     borderRadius: 8,
     margin: 16,

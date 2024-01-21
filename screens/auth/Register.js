@@ -1,8 +1,22 @@
-import { View, Text, StyleSheet, TextInput, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Image,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import React, { useState } from "react";
 import InputBox from "../../components/Forms/InputBox";
 import SubmitButton from "../../components/Forms/SubmitButton";
 import axios from "axios";
+import Animated, {
+  FadeIn,
+  FadeInDown,
+  FadeInUp,
+} from "react-native-reanimated";
+import { StatusBar } from "expo-status-bar";
 const Register = ({ navigation }) => {
   // states
   const [name, setName] = useState("");
@@ -35,69 +49,76 @@ const Register = ({ navigation }) => {
     }
   };
   return (
-    <View style={styles.container}>
-      <Text style={styles.pageTitle}>Register</Text>
-      <View style={{ marginHorizontal: 20 }}>
-        <InputBox inputTitle={"Name"} value={name} setValue={setName} />
-        <InputBox
-          inputTitle={"Email"}
-          keyboardType="email-address"
-          autoComplete="email"
-          value={email}
-          setValue={setEmail}
+    <View className="bg-white h-full w-full">
+      <StatusBar style="light" />
+      <Image
+        className="h-full w-full absolute"
+        source={require("../../assets/background.png")}
+      />
+      <View className="flex-row justify-around w-full absolute">
+        <Animated.Image
+          entering={FadeInUp.delay(200).duration(1000).springify()}
+          source={require("../../assets/light.png")}
+          className="h-[225] w-[90]"
         />
-        <InputBox
-          inputTitle={"Password"}
-          secureTextEntry={true}
-          autoComplete="password"
-          value={password}
-          setValue={setPassword}
+        <Animated.Image
+          entering={FadeInUp.delay(400).duration(1000).springify()}
+          source={require("../../assets/light.png")}
+          className="h-[160] w-[65] opacity-75"
         />
       </View>
-      {/* <Text>{JSON.stringify({ name, email, password }, null, 4)}</Text> */}
-      <SubmitButton
-        btnTitle="Register"
-        loading={loading}
-        handleSubmit={handleSubmit}
-      />
-      <Text style={styles.linkText}>
-        ALready Register Please{" "}
-        <Text style={styles.link} onPress={() => navigation.navigate("Login")}>
-          LOGIN
-        </Text>{" "}
-      </Text>
+      <View className="h-full w-full flex justify-around pt-48">
+        <View className="flex items-center">
+          <Animated.Text
+            entering={FadeInUp.duration(1000).springify()}
+            className="text-white font-bold tracking-wider text-5xl"
+          >
+            Sign Up
+          </Animated.Text>
+        </View>
+        <View className="pt-40">
+          <InputBox
+            inputTitle={"Name"}
+            value={name}
+            setValue={setName}
+            placeholder="Username"
+          />
+          <InputBox
+            inputTitle={"Email"}
+            keyboardType="email-address"
+            autoComplete="email"
+            value={email}
+            setValue={setEmail}
+            placeholder="Email Address"
+          />
+          <InputBox
+            inputTitle={"Password"}
+            secureTextEntry={true}
+            autoComplete="password"
+            value={password}
+            setValue={setPassword}
+            placeholder="password"
+          />
+        </View>
+        {/* <Text>{JSON.stringify({ name, email, password }, null, 4)}</Text> */}
+        <SubmitButton
+          btnTitle="SignUp"
+          loading={loading}
+          handleSubmit={handleSubmit}
+        />
+
+        <Animated.View
+          entering={FadeInDown.delay(800).duration(1000).springify()}
+          className="flex-row justify-center"
+        >
+          <Text>Already have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+            <Text className="text-sky-600">Login</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#e1d5c9",
-  },
-  pageTitle: {
-    fontSize: 40,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#1e2225",
-    marginBottom: 20,
-  },
-  inputBox: {
-    height: 40,
-    marginBottom: 20,
-    backgroundColor: "#ffffff",
-    borderRadius: 10,
-    marginTop: 10,
-    paddingLeft: 10,
-    color: "#af9f85",
-  },
-  linkText: {
-    textAlign: "center",
-  },
-  link: {
-    color: "red",
-  },
-});
 
 export default Register;

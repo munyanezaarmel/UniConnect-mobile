@@ -19,6 +19,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Button, Card, Modal } from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { usePushNotifications } from "../hooks/usePushNotifications";
+import CustomAvatar from '../components/CustomAvatar';
 
 import EditModal from "./EditModal";
 import CommentModal from "./CommentModal";
@@ -39,6 +40,7 @@ const PostCard = ({ posts, myPostScreen }) => {
   const [postState, setPostState] = useContext(PostContext);
 
   const [post, setPost] = useState({});
+  const [likedPosts, setLikedPosts] = useState({});
   const navigation = useNavigation();
   //handle delete prompt
   const handleDeletePropmt = (id) => {
@@ -68,15 +70,24 @@ const PostCard = ({ posts, myPostScreen }) => {
       );
 
       const result = response.data;
-      // Update your local state with the updated post
       setPostState((prevPosts) =>
         prevPosts.map((item) => (item._id === result._id ? result : item))
       );
+
+      // Toggle like status for the specific post
+      setLikedPosts((prevLikedPosts) => ({
+        ...prevLikedPosts,
+        [id]: !prevLikedPosts[id],
+      }));
     } catch (error) {
       console.log(error);
     }
   };
 
+  // Determine if the post is liked based on the likedPosts state
+  const isPostLiked = (postId) => {
+    return likedPosts[postId] || false;
+  };
   //delete post data
   const handleDeletePost = async (id) => {
     try {
@@ -84,7 +95,7 @@ const PostCard = ({ posts, myPostScreen }) => {
       const { data } = await axios.delete(`/post/delete-post/${id}`);
       setLoading(false);
       await sendPushNotification(expoPushToken, data?.message);
-      navigation.push("Myposts");
+      navigation.navigate("Myposts");
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -136,7 +147,7 @@ const PostCard = ({ posts, myPostScreen }) => {
                 <FontAwesome5
                   name="pen"
                   size={16}
-                  color={"darkblue"}
+                  color={"#8200D6"}
                   onPress={() => {
                     setPost(post), setModalVisible(true);
                   }}
@@ -146,7 +157,7 @@ const PostCard = ({ posts, myPostScreen }) => {
                 <FontAwesome5
                   name="trash"
                   size={16}
-                  color={"red"}
+                  color={"gray"}
                   onPress={() => handleDeletePropmt(post?._id)}
                 />
               </Text>
@@ -156,14 +167,13 @@ const PostCard = ({ posts, myPostScreen }) => {
           <View style={styles.footer}>
             {post?.postedBy?.name && (
               <Text>
-                {" "}
-                <FontAwesome5 name="user" color={"orange"} />{" "}
+                <CustomAvatar name={post?.postedBy?.name} size={30} />
                 {post?.postedBy?.name}
               </Text>
             )}
             <Text>
               {" "}
-              <FontAwesome5 name="clock" color={"orange"} />{" "}
+              <FontAwesome5 name="clock" color={"#8200D6"} />{" "}
               {moment(post?.createdAt).fromNow()}
             </Text>
           </View>
@@ -174,15 +184,17 @@ const PostCard = ({ posts, myPostScreen }) => {
           <View>
             {!myPostScreen && (
               <View style={styles.likes}>
+                <TouchableOpacity onPress={() => likePost(post?._id)}>
                 <View style={styles.likeButton}>
                   <AntDesign
                     name="like1"
-                    color="#6b7280"
+                    color={isPostLiked(post?._id) ? "#8200D6" : "#6b7280"}
                     size={20}
-                    onPress={() => likePost(post?._id)}
                   />
                   <Text>{post?.likes?.length}</Text>
                 </View>
+                </TouchableOpacity>
+              
                 <TouchableOpacity onPress={() => setVisible(true)}>
                   <View>
                     <Text>
@@ -191,32 +203,6 @@ const PostCard = ({ posts, myPostScreen }) => {
                     </Text>
                   </View>
                 </TouchableOpacity>
-
-                {visible && (
-                  <View style={styles.commentModal}>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your comment"
-                      value={comment}
-                      onChangeText={(text) => setComment(text)}
-                    />
-                    <Button onPress={() => handleComment(post?._id)}>
-                      Post Comment{" "}
-                    </Button>
-                    <Button onPress={() => setVisible(false)}>Cancel</Button>
-                    {post?.comments.map((comment) => (
-                      <View style={styles.commentSection}>
-                        <Text>{comment?.text}</Text>
-                        {/* <Text>{comment?.createdBy}</Text> */}
-                      </View>
-                    ))}
-                    <CommentModal
-                      postId={post._id}
-                      onPostComment={handleComment}
-                      comments={post.comments}
-                    />
-                  </View>
-                )}
 
                 {/* 
                 <Modal
@@ -249,6 +235,14 @@ const PostCard = ({ posts, myPostScreen }) => {
               </View>
             )}
           </View>
+          {visible && (
+            <CommentModal
+              postId={post._id}
+              onPostComment={handleComment}
+              comments={post.comments}
+              cancel={() => setVisible(false)}
+            />
+          )}
         </View>
       ))}
     </View>
@@ -277,6 +271,8 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+    gap:5, 
     marginTop: 20,
   },
   desc: {

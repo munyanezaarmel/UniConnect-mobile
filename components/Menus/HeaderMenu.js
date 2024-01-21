@@ -17,7 +17,7 @@ const HeaderMenu = () => {
   };
 
   return (
-    <View style={styles.iconsContainer}>
+    <View className="bg-red-400">
         <TouchableOpacity onPress={()=>navigation.navigate("Notification")}>
         <Ionicons
           name="notifications"

@@ -10,9 +10,11 @@ import {
 } from "react-native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import { usePushNotifications } from "../hooks/usePushNotifications";
 
 const EditModal = ({ modalVisible, setModalVisible, post }) => {
   const navigation = useNavigation();
+  const { expoPushToken, sendPushNotification } = usePushNotifications();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,7 +28,7 @@ const EditModal = ({ modalVisible, setModalVisible, post }) => {
         description,
       });
       setLoading(false);
-      alert(data?.message);
+      await sendPushNotification(expoPushToken, data?.message);
       navigation.push("Myposts");
     } catch (error) {
       setLoading(false);
@@ -54,16 +56,7 @@ const EditModal = ({ modalVisible, setModalVisible, post }) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             {/* <Text>{JSON.stringify(post, null, 4)}</Text> */}
-            <Text style={styles.modalText}>Update Your Posts</Text>
-            <Text>Title</Text>
-            <TextInput
-              style={styles.inputBox}
-              value={title}
-              onChangeText={(text) => {
-                setTitle(text);
-              }}
-            />
-            <Text>Descriptioon</Text>
+            <Text style={styles.modalText}>Update Your Post</Text>
             <TextInput
               style={styles.inputBox}
               multiline={true}
@@ -132,16 +125,14 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
     padding: 10,
-    backgroundColor: "black",
+    backgroundColor: "#8200D6",
     elevation: 2,
     width: 100,
     margin: 10,
   },
-  buttonOpen: {
-    // backgroundColor: "#F194FF",
-  },
+ 
   buttonClose: {
-    backgroundColor: "red",
+    backgroundColor: "gray",
   },
   textStyle: {
     color: "white",

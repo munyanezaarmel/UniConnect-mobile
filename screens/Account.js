@@ -93,7 +93,7 @@ const Account = () => {
         </View>
       </ScrollView>
       <View style={{ flex: 1, justifyContent: "flex-end" }}>
-        <FooterMenu />
+        {/* <FooterMenu /> */}
       </View>
     </View>
   );

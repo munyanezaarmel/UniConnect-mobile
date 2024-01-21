@@ -1,5 +1,10 @@
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import React from "react";
+import Animated, {
+  FadeIn,
+  FadeInDown,
+  FadeInUp,
+} from "react-native-reanimated";
 
 const InputBox = ({
   inputTitle,
@@ -8,33 +13,28 @@ const InputBox = ({
   secureTextEntry = false,
   value,
   setValue,
+  placeholder
 }) => {
   return (
-    <View>
-      <Text>{inputTitle}</Text>
-      <TextInput
-        style={styles.inputBox}
-        autoCorrect={false}
-        keyboardType={keyboardType}
-        autoComplete={autoComplete}
-        secureTextEntry={secureTextEntry}
-        value={value}
-        onChangeText={(text) => setValue(text)}
-      />
+    <View className="flex items-center mx-5 space-y-4 mb-3">
+      <Animated.View
+        entering={FadeInDown.duration(1000).springify()}
+        className="bg-black/5 p-5 rounded-2xl w-full"
+      >
+        <TextInput
+          autoCorrect={false}
+          keyboardType={keyboardType}
+          autoComplete={autoComplete}
+          secureTextEntry={secureTextEntry}
+          value={value}
+          onChangeText={(text) => setValue(text)}
+          placeholderTextColor={"gray"}
+          placeholder={placeholder}
+        />
+      </Animated.View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  inputBox: {
-    height: 40,
-    marginBottom: 20,
-    backgroundColor: "#ffffff",
-    borderRadius: 10,
-    marginTop: 10,
-    paddingLeft: 10,
-    color: "#af9f85",
-  },
-});
 
 export default InputBox;
