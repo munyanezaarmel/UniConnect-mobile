@@ -5,7 +5,7 @@ import Animated, {
   FadeInDown,
   FadeInUp,
 } from "react-native-reanimated";
-
+//input box
 const InputBox = ({
   inputTitle,
   autoComplete,
