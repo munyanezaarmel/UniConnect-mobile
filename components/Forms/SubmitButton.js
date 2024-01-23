@@ -12,7 +12,7 @@ const SubmitButton = ({ handleSubmit, btnTitle, loading }) => {
       className="w-full"
       entering={FadeInDown.delay(400).duration(1000).springify()}
     >
-      <TouchableOpacity className="w-full bg-sky-400 p-3 rounded-2xl" onPress={handleSubmit}>
+      <TouchableOpacity className="w-full bg-[#8200D6] p-3 rounded-2xl" onPress={handleSubmit}>
         <Text className="text-xl font-bold text-white text-center">
           {loading ? "Please Wait..." : btnTitle}
         </Text>

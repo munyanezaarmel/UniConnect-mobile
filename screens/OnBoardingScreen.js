@@ -6,7 +6,7 @@ import Onboarding from 'react-native-onboarding-swiper';
 const Dots = ({selected}) => {
     let backgroundColor;
 
-    backgroundColor = selected ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.3)';
+    backgroundColor = selected ? '#8200D6' : 'rgba(0, 0, 0, 0.3)';
 
     return (
         <View 
@@ -22,19 +22,19 @@ const Dots = ({selected}) => {
 
 const Skip = ({...props}) => (
     <TouchableOpacity
-        style={{marginHorizontal:10}}
+        style={{marginHorizontal:10 }}
         {...props}
     >
-        <Text style={{fontSize:16}}>Skip</Text>
+        <Text style={{fontSize:16,color:"white"}}>Skip</Text>
     </TouchableOpacity>
 );
 
 const Next = ({...props}) => (
     <TouchableOpacity
-        style={{marginHorizontal:10}}
+        style={{marginHorizontal:10 ,color:"white"}}
         {...props}
     >
-        <Text style={{fontSize:16}}>Next</Text>
+        <Text style={{fontSize:16,color:"white"}}>Next</Text>
     </TouchableOpacity>
 );
 
@@ -43,7 +43,7 @@ const Done = ({...props}) => (
         style={{marginHorizontal:10}}
         {...props}
     >
-        <Text style={{fontSize:16}}>Done</Text>
+        <Text style={{fontSize:16,color:"white"}}>Done</Text>
     </TouchableOpacity>
 );
 
@@ -54,23 +54,23 @@ const OnboardingScreen = ({navigation}) => {
         NextButtonComponent={Next}
         DoneButtonComponent={Done}
         DotComponent={Dots}
-        onSkip={() => navigation.replace("Login")}
+        onSkip={() => navigation.navigate("Login")}
         onDone={() => navigation.navigate("Login")}
         pages={[
           {
-            backgroundColor: '#a6e4d0',
+            backgroundColor: '#8200D6',
             image: <Image source={require('../assets/onboarding-img1.png')} />,
             title: 'Connect to the World',
             subtitle: 'A New Way To Connect With The World',
           },
           {
-            backgroundColor: '#fdeb93',
+            backgroundColor: '#8200D6',
             image: <Image source={require('../assets/onboarding-img2.png')} />,
             title: 'Share Your Favorites',
             subtitle: 'Share Your Thoughts With Similar Kind of People',
           },
           {
-            backgroundColor: '#e9bcbe',
+            backgroundColor: '#8200D6',
             image: <Image source={require('../assets/onboarding-img3.png')} />,
             title: 'Become The Star',
             subtitle: "Let The Spot Light Capture You",
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1, 
     alignItems: 'center', 
-    justifyContent: 'center'
+    justifyContent: 'center',
+    color:"white"
   },
 });

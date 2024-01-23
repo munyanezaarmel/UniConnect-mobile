@@ -53,7 +53,7 @@ const Register = ({ navigation }) => {
       <StatusBar style="light" />
       <Image
         className="h-full w-full absolute"
-        source={require("../../assets/background.png")}
+        source={require("../../assets/back.png")}
       />
       <View className="flex-row justify-around w-full absolute">
         <Animated.Image
@@ -67,7 +67,7 @@ const Register = ({ navigation }) => {
           className="h-[160] w-[65] opacity-75"
         />
       </View>
-      <View className="h-full w-full flex justify-around pt-48">
+      <View className="h-full w-full flex justify-around pt-52">
         <View className="flex items-center">
           <Animated.Text
             entering={FadeInUp.duration(1000).springify()}
@@ -113,7 +113,7 @@ const Register = ({ navigation }) => {
         >
           <Text>Already have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text className="text-sky-600">Login</Text>
+            <Text className="text-[#8200D6]">Login</Text>
           </TouchableOpacity>
         </Animated.View>
       </View>

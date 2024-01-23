@@ -60,7 +60,7 @@ const Login = ({ navigation }) => {
       <StatusBar style="light" />
       <Image
         className="h-full w-full absolute"
-        source={require("../../assets/background.png")}
+        source={require("../../assets/back.png")}
       />
       <View className="flex-row justify-around w-full absolute">
         <Animated.Image
@@ -117,7 +117,7 @@ const Login = ({ navigation }) => {
           >
             <Text>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-              <Text className="text-sky-600">SignUp</Text>
+              <Text className="text-[#8200D6]">SignUp</Text>
             </TouchableOpacity>
           </Animated.View>
         </View>

@@ -9,6 +9,7 @@ import Animated, {
   FadeInDown,
   FadeInUp,
 } from "react-native-reanimated";
+import moment from "moment";
 
 const CommentModal = ({
   postId,
@@ -105,7 +106,7 @@ const CommentModal = ({
                   marginBottom: 2,
                   borderRadius: 20,
                   width: "100%",
-                  gap:10
+                  gap: 10,
                 }}
               >
                 <Text
@@ -120,12 +121,12 @@ const CommentModal = ({
                 </Text>
                 <Text
                   style={{
-                    marginBottom:-15,
-                  
+                    marginBottom: -15,
                   }}
                 >
                   {comment.text}
                 </Text>
+                {/* <Text> {moment(comment?.createdAt).fromNow()}</Text> */}
               </View>
             </View>
           ))
