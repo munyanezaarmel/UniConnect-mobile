@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   updateBtn: {
-    backgroundColor: "black",
+    backgroundColor: "#8200D6",
     color: "white",
     height: 40,
     width: 250,
