@@ -6,7 +6,7 @@ import Onboarding from 'react-native-onboarding-swiper';
 const Dots = ({selected}) => {
     let backgroundColor;
 
-    backgroundColor = selected ? '#8200D6' : 'rgba(0, 0, 0, 0.3)';
+    backgroundColor = selected ? '#FFFFFF' : 'rgba(0, 0, 0, 0.3)';
 
     return (
         <View 
@@ -58,19 +58,19 @@ const OnboardingScreen = ({navigation}) => {
         onDone={() => navigation.navigate("Login")}
         pages={[
           {
-            backgroundColor: '#8200D6',
+            backgroundColor: '#5b0095',
             image: <Image source={require('../assets/onboarding-img1.png')} />,
             title: 'Connect to the World',
             subtitle: 'A New Way To Connect With The World',
           },
           {
-            backgroundColor: '#8200D6',
+            backgroundColor: '#5b0095',
             image: <Image source={require('../assets/onboarding-img2.png')} />,
             title: 'Share Your Favorites',
             subtitle: 'Share Your Thoughts With Similar Kind of People',
           },
           {
-            backgroundColor: '#8200D6',
+            backgroundColor: '#5b0095',
             image: <Image source={require('../assets/onboarding-img3.png')} />,
             title: 'Become The Star',
             subtitle: "Let The Spot Light Capture You",

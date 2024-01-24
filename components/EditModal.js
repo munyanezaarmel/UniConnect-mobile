@@ -33,7 +33,7 @@ const EditModal = ({ modalVisible, setModalVisible, post }) => {
     } catch (error) {
       setLoading(false);
       console.log(error);
-      alert(erorr);
+      alert(error);
     }
   };
 
