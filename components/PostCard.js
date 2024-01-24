@@ -57,6 +57,7 @@ const PostCard = ({ posts, myPostScreen }) => {
       },
     ]);
   };
+  //handle likes
   const likePost = async (id) => {
     try {
       const response = await axios.put(
@@ -88,7 +89,7 @@ const PostCard = ({ posts, myPostScreen }) => {
   const isPostLiked = (postId) => {
     return likedPosts[postId] || false;
   };
-  //delete post data
+ 
   const handleDeletePost = async (id) => {
     try {
       setLoading(true);
@@ -102,6 +103,7 @@ const PostCard = ({ posts, myPostScreen }) => {
       alert(error);
     }
   };
+  //handle comment
   const handleComment = async (text, postId) => {
     try {
       const response = await axios.put(
